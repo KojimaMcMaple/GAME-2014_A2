@@ -23,7 +23,7 @@ public static class GlobalEnums
         PLAYER,
         ENEMY,
         BOSS,
-        TYPE_COUNT
+        NUM_OF_TYPE
     };
 
     public enum FoodType
@@ -32,12 +32,21 @@ public static class GlobalEnums
         LOW,
         HIGH,
         BEYOND,
-        TYPE_COUNT
+        NUM_OF_TYPE
     };
 
     public enum EnemyState
     {
         IDLE,
         ATTACK
+    };
+
+    public enum MovingPlatformDir
+    {
+        HORIZONTAL,
+        VERTICAL,
+        DIAGONAL_UP,
+        DIAGONAL_DOWN,
+        NUM_OF_DIR,
     };
 }

@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
     private Rigidbody2D rb_;
     [SerializeField] private CapsuleCollider2D player_collider_;
     //private Vector2 move_dir_;
+    protected bool is_facing_left_ = false;
+    private float start_scale_x_ = 1f;
     private float scale_x_ = 1f;
     private Animator animator_;
     private SpriteRenderer renderer_;
@@ -54,6 +56,9 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
         animator_ = GetComponent<Animator>();
         renderer_ = GetComponent<SpriteRenderer>();
         player_collider_ = GetComponent<CapsuleCollider2D>();
+        is_facing_left_ = transform.localScale.x > 0 ? false : true;
+        start_scale_x_ = Mathf.Abs(transform.localScale.x);
+        scale_x_ = start_scale_x_;
 
         bullet_spawn_pos_ = transform.Find("BulletSpawnPosition"); 
         bullet_manager_ = FindObjectOfType<BulletManager>();
@@ -80,11 +85,11 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
         rb_.velocity = new Vector2(movement_input.x * move_speed_, rb_.velocity.y);
         if (movement_input.x > 0) //has to split movement_input.x > 0 and movement_input.x < 0 so player faces the right direction. Because scale_x_ = movement_input.x > 0 ? 1 :-1 will fail.
         {
-            scale_x_ = 1;
+            is_facing_left_ = false;
         }
         else if (movement_input.x < 0)
         {
-            scale_x_ = -1;
+            is_facing_left_ = true;
         }
         
         if (input_.PlayerMain.Jump.triggered && is_grounded) //jump pressed
@@ -147,7 +152,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
             }
         }
 
-        transform.localScale = new Vector3(scale_x_, transform.localScale.y, transform.localScale.z); //sets which way the player faces
+        transform.localScale = new Vector3(is_facing_left_ ? -scale_x_ : scale_x_, transform.localScale.y, transform.localScale.z); //sets which way the player faces
     }
 
     private void OnEnable()
@@ -186,7 +191,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
     /// <returns></returns>
     private bool IsGrounded()
     {
-        return Physics2D.Raycast(new Vector2(player_collider_.transform.position.x, player_collider_.bounds.min.y), Vector2.down, 0.1f, LayerMask.GetMask("Ground"));
+        return Physics2D.Raycast(new Vector2(player_collider_.transform.position.x, player_collider_.bounds.min.y), Vector2.down, 0.11f, LayerMask.GetMask("Ground"));
     }
 
     /// <summary>
@@ -250,6 +255,24 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
             health += heal_value;
             health = health > hp_ ? hp_ : health; //Clamps health so it doesn't exceed hp_
             game_manager_.SetUIHPBarValue((float)health / (float)hp_); //Updates UI
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            transform.SetParent(collision.transform, true);
+            scale_x_ = transform.localScale.x;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            transform.SetParent(null);
+            scale_x_ = start_scale_x_;
         }
     }
 

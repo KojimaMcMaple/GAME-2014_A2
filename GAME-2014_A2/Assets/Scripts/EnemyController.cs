@@ -12,61 +12,62 @@ using UnityEngine;
 /// </summary>
 public class EnemyController : MonoBehaviour, IDamageable<int>
 {
-    [Header("Stats")]
-    [SerializeField] private int hp_ = 100;
-    [SerializeField] private int score_ = 50;
+    // BASE STATS
+    [SerializeField] protected int hp_ = 100;
+    [SerializeField] protected int score_ = 50;
+    [SerializeField] protected float speed_ = 0.75f;
+    [SerializeField] protected float firerate_ = 0.47f;
+    protected float shoot_countdown_ = 0.0f;
+    protected Vector3 start_pos_;
 
-    [Header("Movement")]
-    private Vector3 start_pos_;
-    [SerializeField] private float vertical_range_ = 0.47f;
-    
-    [Header("Bullets")]
-    private Transform bullet_spawn_pos_;
-    //public GameObject bulletPrefab;
-    [SerializeField] private float speed_ = 0.75f;
-    [SerializeField] private float firerate_ = 0.47f;
-    private float shoot_countdown_ = 0.0f;
+    // UNITY COMPONENTS
+    protected Animator animator_;
+    protected Rigidbody2D rb_;
 
-    private Transform fov_;
-    private bool is_facing_left_ = true;
-    private GlobalEnums.EnemyState state_ = GlobalEnums.EnemyState.IDLE;
-    private Animator animator_;
+    // LOGIC
+    protected Transform fov_; //not used
+    protected bool is_facing_left_ = true;
+    protected float start_scale_x_;
+    protected float scale_x_;
+    protected GlobalEnums.EnemyState state_ = GlobalEnums.EnemyState.IDLE;
 
-    private BulletManager bullet_manager_;
-    private ExplosionManager explode_manager_;
-    private FoodManager food_manager_;
-    private GameManager game_manager_;
+    // MANAGERS
+    protected BulletManager bullet_manager_;
+    protected ExplosionManager explode_manager_;
+    protected FoodManager food_manager_;
+    protected GameManager game_manager_;
 
-    private VfxSpriteFlash flash_vfx_;
+    // VFX
+    protected VfxSpriteFlash flash_vfx_;
 
-    [SerializeField] private AudioClip shoot_sfx_;
-    [SerializeField] private AudioClip damaged_sfx_;
-    private AudioSource audio_source_;
+    // SFX
+    [SerializeField] protected AudioClip attack_sfx_;
+    [SerializeField] protected AudioClip damaged_sfx_;
+    protected AudioSource audio_source_;
 
-    void Awake()
+    protected void DoBaseInit()
     {
         start_pos_ = transform.position;
         is_facing_left_ = transform.localScale.x > 0 ? false : true;
-        shoot_countdown_ = firerate_;
+        start_scale_x_ = Mathf.Abs(transform.localScale.x);
+        scale_x_ = start_scale_x_;
         animator_ = GetComponent<Animator>();
-        fov_ = transform.Find("FieldOfVision");
-        bullet_spawn_pos_ = transform.Find("BulletSpawnPosition");
-        bullet_manager_ =   GameObject.FindObjectOfType<BulletManager>();
+        rb_ = GetComponent<Rigidbody2D>();
         explode_manager_ =   GameObject.FindObjectOfType<ExplosionManager>();
         food_manager_ =     GameObject.FindObjectOfType<FoodManager>();
         game_manager_ =     GameObject.FindObjectOfType<GameManager>();
         flash_vfx_ = GetComponent<VfxSpriteFlash>();
         audio_source_ = GetComponent<AudioSource>();
+        fov_ = transform.Find("FieldOfVision");
+
+        bullet_manager_ = GameObject.FindObjectOfType<BulletManager>();
+        shoot_countdown_ = firerate_;
 
         Init(); //IDamageable method
     }
 
-    void Update()
+    protected void DoBaseUpdate()
     {
-        transform.position = new Vector2(transform.position.x, Mathf.PingPong(Time.time * speed_, vertical_range_) + start_pos_.y); //bops up and down
-        float scale_x = is_facing_left_ ? -1.0f : 1.0f;
-        transform.localScale = new Vector3(scale_x, transform.localScale.y, transform.localScale.z); //sets which way the enemy faces
-
         switch (state_) //state machine
         {
             case GlobalEnums.EnemyState.IDLE:
@@ -74,7 +75,7 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
                 break;
             case GlobalEnums.EnemyState.ATTACK:
                 animator_.SetBool("IsAttacking", true);
-                DoShoot();
+                DoAttack();
                 break;
             default:
                 break;
@@ -82,18 +83,11 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     }
 
     /// <summary>
-    /// Shoots a bullet, pooled from queue
+    /// Attack behaviour
     /// </summary>
-    private void DoShoot()
+    protected virtual void DoAttack()
     {
-        shoot_countdown_ -= Time.deltaTime;
-        if (shoot_countdown_ <= 0)
-        {
-            GlobalEnums.BulletDir dir = is_facing_left_ ? GlobalEnums.BulletDir.LEFT : GlobalEnums.BulletDir.RIGHT;
-            bullet_manager_.GetBullet(bullet_spawn_pos_.position, GlobalEnums.ObjType.ENEMY, dir);
-            shoot_countdown_ = firerate_;
-            audio_source_.PlayOneShot(shoot_sfx_);
-        }
+        
     }
 
     /// <summary>
@@ -105,11 +99,20 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     }
 
     /// <summary>
+    /// Accessor for private variable
+    /// </summary>
+    public bool IsFacingLeft()
+    {
+        return is_facing_left_;
+    }
+
+    /// <summary>
     /// Mutator for private variable
     /// </summary>
     public void SetIsFacingLeft(bool value)
     {
         is_facing_left_ = value;
+        transform.localScale = new Vector3(is_facing_left_ ? -scale_x_ : scale_x_, transform.localScale.y, transform.localScale.z); //sets which way the enemy faces
     }
 
     /// <summary>
@@ -130,24 +133,10 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
         if (health <= 0)
         {
             explode_manager_.GetObj(this.transform.position, obj_type);
-            food_manager_.GetObj(this.transform.position, (GlobalEnums.FoodType)Random.Range(0, (int)GlobalEnums.FoodType.TYPE_COUNT));
+            food_manager_.GetObj(this.transform.position, (GlobalEnums.FoodType)Random.Range(0, (int)GlobalEnums.FoodType.NUM_OF_TYPE));
             game_manager_.IncrementScore(score_);
             this.gameObject.SetActive(false);
         }
     }
     public void HealDamage(int heal_value) { } //Adds health to object
-
-    /// <summary>
-    /// Visual debug
-    /// </summary>
-    void OnDrawGizmosSelected()
-    {
-        // Draw a yellow sphere at the transform's position
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.Find("BulletSpawnPosition").position, 0.05f);
-
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + vertical_range_, transform.position.z), new Vector3(0.2f, 0.05f, 1));
-        Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y - vertical_range_, transform.position.z), new Vector3(0.2f, 0.05f, 1));
-    }
 }

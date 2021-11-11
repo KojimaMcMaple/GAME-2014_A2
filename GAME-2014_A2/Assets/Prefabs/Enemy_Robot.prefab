@@ -245,7 +245,7 @@ MonoBehaviour:
   vertical_range_: 0.47
   speed_: 0.75
   firerate_: 1
-  shoot_sfx_: {fileID: 8300000, guid: b01d00f10d471024fb9cc54830faaec7, type: 3}
+  attack_sfx_: {fileID: 8300000, guid: b01d00f10d471024fb9cc54830faaec7, type: 3}
   damaged_sfx_: {fileID: 8300000, guid: 5d514d360ebf4df40bea68c0d1a6848d, type: 3}
 --- !u!114 &8964424976345451131
 MonoBehaviour:
