@@ -91,6 +91,14 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     }
 
     /// <summary>
+    /// Aggro behaviour
+    /// </summary>
+    public virtual void DoAggro()
+    {
+
+    }
+
+    /// <summary>
     /// Mutator for private variable
     /// </summary>
     public void SetState(GlobalEnums.EnemyState value)

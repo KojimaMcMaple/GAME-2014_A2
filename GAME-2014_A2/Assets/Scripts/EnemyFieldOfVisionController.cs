@@ -30,7 +30,7 @@ public class EnemyFieldOfVisionController : MonoBehaviour
         {
             if (other_interface.obj_type == GlobalEnums.ObjType.PLAYER)
             {
-                parent_controller_.SetState(GlobalEnums.EnemyState.ATTACK);
+                parent_controller_.DoAggro();
             }
         }
     }

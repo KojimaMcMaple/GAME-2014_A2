@@ -38,6 +38,7 @@ public static class GlobalEnums
     public enum EnemyState
     {
         IDLE,
+        MOVE_TO_TARGET,
         ATTACK
     };
 

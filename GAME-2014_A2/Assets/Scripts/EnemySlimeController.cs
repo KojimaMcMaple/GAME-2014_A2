@@ -18,14 +18,38 @@ public class EnemySlimeController : EnemyController
 
     void FixedUpdate()
     {
-        LookAhead();
-        Move();
-        DoBaseUpdate();
+        switch (state_) //state machine
+        {
+            case GlobalEnums.EnemyState.IDLE:
+                LookAhead();
+                Move();
+                animator_.SetBool("IsAttacking", false);
+                break;
+            case GlobalEnums.EnemyState.MOVE_TO_TARGET:
+                LookAhead();
+                MoveToTarget();
+                animator_.SetBool("IsAttacking", true);
+                break;
+            case GlobalEnums.EnemyState.ATTACK:
+                animator_.SetBool("IsAttacking", true);
+                DoAttack();
+                break;
+            default:
+                break;
+        }
     }
 
     protected override void DoAttack()
     {
         
+    }
+
+    /// <summary>
+    /// Aggro if player detected
+    /// </summary>
+    public override void DoAggro()
+    {
+        SetState(GlobalEnums.EnemyState.MOVE_TO_TARGET);
     }
 
     private void LookAhead()
@@ -57,6 +81,11 @@ public class EnemySlimeController : EnemyController
         {
             SetIsFacingLeft(!IsFacingLeft()); //flip
         }
+    }
+
+    private void MoveToTarget()
+    {
+        
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

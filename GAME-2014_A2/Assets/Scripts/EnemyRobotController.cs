@@ -38,6 +38,14 @@ public class EnemyRobotController : EnemyController
     }
 
     /// <summary>
+    /// Aggro if player detected
+    /// </summary>
+    public override void DoAggro()
+    {
+        SetState(GlobalEnums.EnemyState.ATTACK);
+    }
+
+    /// <summary>
     /// Visual debug
     /// </summary>
     void OnDrawGizmosSelected()
