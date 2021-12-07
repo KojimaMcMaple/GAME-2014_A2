@@ -24,7 +24,7 @@ public class ParallaxBkgController : MonoBehaviour
 
     void Start()
     {
-        camera_transform_ = Camera.main.transform;
+        camera_transform_ = Camera.main.GetComponentInParent<CameraController>().transform;
         prev_camera_pos_ = camera_transform_.position;
         if (GetComponent<SpriteRenderer>() != null)
         {

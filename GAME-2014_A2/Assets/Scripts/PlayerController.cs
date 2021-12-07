@@ -38,8 +38,10 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
     private ExplosionManager explode_manager_;
     
     private GameManager game_manager_;
+    private CameraController cam_controller_;
 
     private VfxSpriteFlash flash_vfx_;
+    private ParticleSystem dust_vfx_;
 
     private PlayerInputControls input_;
 
@@ -64,7 +66,9 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
         bullet_manager_ = FindObjectOfType<BulletManager>();
         explode_manager_ = FindObjectOfType<ExplosionManager>();
         game_manager_ = FindObjectOfType<GameManager>();
+        cam_controller_ = FindObjectOfType<CameraController>();
         flash_vfx_ = GetComponent<VfxSpriteFlash>();
+        dust_vfx_ = transform.Find("DustTrail").GetComponent<ParticleSystem>();
         audio_source_ = GetComponent<AudioSource>();
 
         Init(); //IDamageable method
@@ -95,6 +99,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
         if (input_.PlayerMain.Jump.triggered && is_grounded) //jump pressed
         {
             rb_.velocity = new Vector2(rb_.velocity.x, jump_force_);
+            SpawnDustVfx();
         }
         if (input_.PlayerMain.Shoot.triggered) //shoot pressed
         {
@@ -137,6 +142,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
             if (rb_.velocity.x != 0)
             {
                 animator_.SetBool("IsRunning", true);
+                SpawnDustVfx();
             }
             else
             {
@@ -163,6 +169,14 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
     private void OnDisable()
     {
         input_.Disable();
+    }
+
+    /// <summary>
+    /// Creates dust trail
+    /// </summary>
+    private void SpawnDustVfx()
+    {
+        dust_vfx_.Play();
     }
 
     /// <summary>
@@ -231,6 +245,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
     public GlobalEnums.ObjType obj_type { get; set; } //Type of gameobject
     public void ApplyDamage(int damage_value) //Deals damage to object
     {
+        StartCoroutine(cam_controller_.DoShake(0.15f, 0.4f));
         health -= damage_value;
         health = health < 0 ? 0 : health; //Clamps health so it doesn't go below 0
         game_manager_.SetUIHPBarValue((float)health / (float)hp_); //Updates UI

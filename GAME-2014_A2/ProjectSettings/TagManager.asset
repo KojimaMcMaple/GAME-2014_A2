@@ -19,9 +19,9 @@ TagManager:
   - Enemy
   - Projectile
   - FieldOfVision
-  - 
-  - 
-  - 
+  - Background
+  - Marker
+  - Player
   - 
   - 
   - 
