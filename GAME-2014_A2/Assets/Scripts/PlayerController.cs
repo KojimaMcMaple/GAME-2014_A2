@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
     /// <returns></returns>
     private bool IsGrounded()
     {
-        return Physics2D.Raycast(new Vector2(player_collider_.transform.position.x, player_collider_.bounds.min.y), Vector2.down, 0.11f, LayerMask.GetMask("Ground"));
+        return Physics2D.Raycast(new Vector2(player_collider_.transform.position.x, player_collider_.bounds.min.y), Vector2.down, 0.12f, LayerMask.GetMask("Ground"));
     }
 
     /// <summary>
