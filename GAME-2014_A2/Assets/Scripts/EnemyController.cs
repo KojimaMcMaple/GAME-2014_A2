@@ -30,6 +30,8 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     protected float start_scale_x_;
     protected float scale_x_;
     protected GlobalEnums.EnemyState state_ = GlobalEnums.EnemyState.IDLE;
+    protected GameObject target_;
+    protected bool is_atk_hitbox_active_ = false;
 
     // MANAGERS
     protected BulletManager bullet_manager_;
@@ -87,7 +89,6 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     /// </summary>
     protected virtual void DoAttack()
     {
-        
     }
 
     /// <summary>
@@ -95,7 +96,6 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     /// </summary>
     public virtual void DoAggro()
     {
-
     }
 
     /// <summary>
@@ -121,6 +121,54 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     {
         is_facing_left_ = value;
         transform.localScale = new Vector3(is_facing_left_ ? -scale_x_ : scale_x_, transform.localScale.y, transform.localScale.z); //sets which way the enemy faces
+    }
+
+    /// <summary>
+    /// Accessor for private variable
+    /// </summary>
+    public GameObject GetTarget()
+    {
+        return target_;
+    }
+
+    /// <summary>
+    /// Mutator for private variable
+    /// </summary>
+    public void SetTarget(GameObject obj)
+    {
+        target_ = obj;
+    }
+
+    /// <summary>
+    /// Accessor for private variable
+    /// </summary>
+    public bool IsAtkHitboxActive()
+    {
+        return is_atk_hitbox_active_;
+    }
+
+    /// <summary>
+    /// Mutator for private variable
+    /// </summary>
+    public void SetIsAtkHitboxActive(bool value)
+    {
+        is_atk_hitbox_active_ = value;
+    }
+
+    /// <summary>
+    /// Mutator for private variable
+    /// </summary>
+    public void SetAtkHitboxActive()
+    {
+        SetIsAtkHitboxActive(true);
+    }
+
+    /// <summary>
+    /// Mutator for private variable
+    /// </summary>
+    public void SetAtkHitboxInactive()
+    {
+        SetIsAtkHitboxActive(false);
     }
 
     /// <summary>

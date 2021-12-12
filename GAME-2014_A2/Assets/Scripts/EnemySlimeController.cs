@@ -22,16 +22,14 @@ public class EnemySlimeController : EnemyController
         {
             case GlobalEnums.EnemyState.IDLE:
                 LookAhead();
-                Move();
-                animator_.SetBool("IsAttacking", false);
+                DoPatrol();
+                //animator_.SetBool("IsAttacking", false);
                 break;
             case GlobalEnums.EnemyState.MOVE_TO_TARGET:
                 LookAhead();
                 MoveToTarget();
-                animator_.SetBool("IsAttacking", true);
                 break;
             case GlobalEnums.EnemyState.ATTACK:
-                animator_.SetBool("IsAttacking", true);
                 DoAttack();
                 break;
             default:
@@ -41,7 +39,13 @@ public class EnemySlimeController : EnemyController
 
     protected override void DoAttack()
     {
-        
+        animator_.SetBool("IsAttacking", true);
+        if (Vector2.Distance(transform.position, target_.transform.position) > 1.0f)
+        {
+            SetState(GlobalEnums.EnemyState.MOVE_TO_TARGET);
+            animator_.SetBool("IsAttacking", false);
+            SetIsAtkHitboxActive(false);
+        }
     }
 
     /// <summary>
@@ -71,11 +75,16 @@ public class EnemySlimeController : EnemyController
 
     private void Move()
     {
+        float dir = IsFacingLeft() ? -1.0f : 1.0f;
+        rb_.AddForce(new Vector2(dir, 0) * move_force_);
+        rb_.velocity *= 0.9f;
+    }
+
+    private void DoPatrol()
+    {
         if (is_ground_ahead_)
         {
-            float dir = IsFacingLeft() ? -1.0f : 1.0f;
-            rb_.AddForce(new Vector2(dir, 0) * move_force_);
-            rb_.velocity *= 0.9f;
+            Move();
         }
         else
         {
@@ -85,7 +94,23 @@ public class EnemySlimeController : EnemyController
 
     private void MoveToTarget()
     {
-        
+        if (target_ == null)
+        {
+            SetState(GlobalEnums.EnemyState.IDLE);
+            return;
+        }
+
+        if (Vector2.Distance(transform.position, target_.transform.position) < 1.0f)
+        {
+            SetState(GlobalEnums.EnemyState.ATTACK);
+        }
+        else
+        {
+            if (is_ground_ahead_)
+            {
+                Move();
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
