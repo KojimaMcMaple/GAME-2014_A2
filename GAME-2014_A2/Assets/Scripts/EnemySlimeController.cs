@@ -35,12 +35,17 @@ public class EnemySlimeController : EnemyController
             default:
                 break;
         }
+
+        if (shoot_countdown_ > 0)
+        {
+            shoot_countdown_ -= Time.deltaTime;
+        }
     }
 
     protected override void DoAttack()
     {
         animator_.SetBool("IsAttacking", true);
-        if (Vector2.Distance(transform.position, target_.transform.position) > 1.0f)
+        if (Vector2.Distance(transform.position, target_.transform.position) > 1.25f)
         {
             SetState(GlobalEnums.EnemyState.MOVE_TO_TARGET);
             animator_.SetBool("IsAttacking", false);
@@ -100,7 +105,7 @@ public class EnemySlimeController : EnemyController
             return;
         }
 
-        if (Vector2.Distance(transform.position, target_.transform.position) < 1.0f)
+        if (Vector2.Distance(transform.position, target_.transform.position) < 1.25f)
         {
             SetState(GlobalEnums.EnemyState.ATTACK);
         }
@@ -128,6 +133,25 @@ public class EnemySlimeController : EnemyController
         {
             transform.SetParent(null);
             scale_x_ = start_scale_x_;
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (IsAtkHitboxActive())
+        {
+            IDamageable<int> other_interface = collision.gameObject.GetComponent<IDamageable<int>>();
+            if (other_interface != null)
+            {
+                if (other_interface.obj_type != type_)
+                {
+                    if (shoot_countdown_ <= 0)
+                    {
+                        other_interface.ApplyDamage(collision_damage_);
+                        shoot_countdown_ = firerate_; //prevents applying damage every frame
+                    }
+                }
+            }
         }
     }
 

@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
     private Animator animator_;
     private SpriteRenderer renderer_;
     private bool is_dead_ = false;
+    private Vector3 respawn_pos_ = Vector3.zero;
 
     [SerializeField] private float shoot_delay_ = 0.21f;
     [SerializeField] private float shoot_anim_delay_ = 0.7f;
@@ -73,6 +74,7 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
 
         Init(); //IDamageable method
         game_manager_.SetUIHPBarValue(health / hp_);
+        respawn_pos_ = transform.position;
     }
 
     void Update()
@@ -288,6 +290,14 @@ public class PlayerController : MonoBehaviour, IDamageable<int>
         {
             transform.SetParent(null);
             scale_x_ = start_scale_x_;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("DeathTrigger"))
+        {
+            transform.position = respawn_pos_;
         }
     }
 

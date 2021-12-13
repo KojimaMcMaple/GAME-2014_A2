@@ -46,8 +46,10 @@ public static class GlobalEnums
     {
         HORIZONTAL,
         VERTICAL,
-        DIAGONAL_UP,
-        DIAGONAL_DOWN,
+        UP_RIGHT,
+        DOWN_RIGHT,
+        UP_LEFT,
+        DOWN_LEFT,
         NUM_OF_DIR,
     };
 }

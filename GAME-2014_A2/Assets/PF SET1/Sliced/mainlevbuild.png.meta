@@ -11203,10 +11203,10 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -3, y: -7}
+      - - {x: -3, y: -5}
         - {x: -3, y: -8}
         - {x: 8, y: -8}
-        - {x: 8, y: -7}
+        - {x: 8, y: -5}
       tessellationDetail: 0
       bones: []
       spriteID: 17b78f874784adf4fada91d35dc481d6
@@ -11228,10 +11228,10 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -8, y: -7}
+      - - {x: -8, y: -5}
         - {x: -8, y: -8}
         - {x: 8, y: -8}
-        - {x: 8, y: -7}
+        - {x: 8, y: -5}
       tessellationDetail: 0
       bones: []
       spriteID: 58757ea6e3ffb124097f540ddb0b0e4e
@@ -11253,10 +11253,10 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -8, y: -7}
+      - - {x: -8, y: -5}
         - {x: -8, y: -8}
         - {x: 8, y: -8}
-        - {x: 8, y: -7}
+        - {x: 8, y: -5}
       tessellationDetail: 0
       bones: []
       spriteID: 2520ab13c898d044ba4eab14ea0713e0
@@ -11278,10 +11278,10 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -8, y: -7}
+      - - {x: -8, y: -5}
         - {x: -8, y: -8}
         - {x: 8, y: -8}
-        - {x: 8, y: -7}
+        - {x: 8, y: -5}
       tessellationDetail: 0
       bones: []
       spriteID: 4bc33a077cae7034b81efc8008f885fd
@@ -11303,10 +11303,10 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -8, y: -7}
+      - - {x: -8, y: -5}
         - {x: -8, y: -8}
         - {x: 3, y: -8}
-        - {x: 3, y: -7}
+        - {x: 3, y: -5}
       tessellationDetail: 0
       bones: []
       spriteID: eed6bf7ba65e62249ba34625896c866a
@@ -12062,7 +12062,7 @@ TextureImporter:
       physicsShape:
       - - {x: -8, y: 8}
         - {x: -8, y: -8}
-        - {x: -1, y: -8}
+        - {x: 3, y: -8}
         - {x: 3, y: 8}
       tessellationDetail: 0
       bones: []

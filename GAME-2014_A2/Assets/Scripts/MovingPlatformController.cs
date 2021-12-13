@@ -39,11 +39,17 @@ public class MovingPlatformController : MonoBehaviour
             case GlobalEnums.MovingPlatformDir.VERTICAL:
                 transform.position = new Vector2(transform.position.x, start_pos_.y + pingpong_value);
                 break;
-            case GlobalEnums.MovingPlatformDir.DIAGONAL_UP:
+            case GlobalEnums.MovingPlatformDir.UP_RIGHT:
                 transform.position = new Vector2(start_pos_.x + pingpong_value, start_pos_.y + pingpong_value);
                 break;
-            case GlobalEnums.MovingPlatformDir.DIAGONAL_DOWN:
+            case GlobalEnums.MovingPlatformDir.DOWN_RIGHT:
                 transform.position = new Vector2(start_pos_.x + pingpong_value, start_pos_.y - pingpong_value);
+                break;
+            case GlobalEnums.MovingPlatformDir.UP_LEFT:
+                transform.position = new Vector2(start_pos_.x - pingpong_value, start_pos_.y + pingpong_value);
+                break;
+            case GlobalEnums.MovingPlatformDir.DOWN_LEFT:
+                transform.position = new Vector2(start_pos_.x - pingpong_value, start_pos_.y - pingpong_value);
                 break;
             default:
                 break;
@@ -72,13 +78,21 @@ public class MovingPlatformController : MonoBehaviour
                 Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + distance_ + (col_extents.y), transform.position.z), new Vector3(col_extents.x, 0.05f, 1));
                 Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + distance_ - (col_extents.y), transform.position.z), new Vector3(col_extents.x, 0.05f, 1));
                 break;
-            case GlobalEnums.MovingPlatformDir.DIAGONAL_UP:
+            case GlobalEnums.MovingPlatformDir.UP_RIGHT:
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawWireCube(new Vector3(transform.position.x + distance_, transform.position.y + distance_, transform.position.z), new Vector3(col_extents.x*2, col_extents.y*2, 1));
                 break;
-            case GlobalEnums.MovingPlatformDir.DIAGONAL_DOWN:
+            case GlobalEnums.MovingPlatformDir.DOWN_RIGHT:
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawWireCube(new Vector3(transform.position.x + distance_, transform.position.y - distance_, transform.position.z), new Vector3(col_extents.x*2, col_extents.y*2, 1));
+                break;
+            case GlobalEnums.MovingPlatformDir.UP_LEFT:
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawWireCube(new Vector3(transform.position.x - distance_, transform.position.y + distance_, transform.position.z), new Vector3(col_extents.x * 2, col_extents.y * 2, 1));
+                break;
+            case GlobalEnums.MovingPlatformDir.DOWN_LEFT:
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawWireCube(new Vector3(transform.position.x - distance_, transform.position.y - distance_, transform.position.z), new Vector3(col_extents.x * 2, col_extents.y * 2, 1));
                 break;
             default:
                 break;

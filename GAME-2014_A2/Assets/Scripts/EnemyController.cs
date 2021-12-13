@@ -17,6 +17,7 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     [SerializeField] protected int score_ = 50;
     [SerializeField] protected float speed_ = 0.75f;
     [SerializeField] protected float firerate_ = 0.47f;
+    [SerializeField] protected int collision_damage_ = 20;
     protected float shoot_countdown_ = 0.0f;
     protected Vector3 start_pos_;
 
@@ -32,6 +33,7 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     protected GlobalEnums.EnemyState state_ = GlobalEnums.EnemyState.IDLE;
     protected GameObject target_;
     protected bool is_atk_hitbox_active_ = false;
+    protected GlobalEnums.ObjType type_ = GlobalEnums.ObjType.ENEMY;
 
     // MANAGERS
     protected BulletManager bullet_manager_;
@@ -161,6 +163,7 @@ public class EnemyController : MonoBehaviour, IDamageable<int>
     public void SetAtkHitboxActive()
     {
         SetIsAtkHitboxActive(true);
+        audio_source_.PlayOneShot(attack_sfx_);
     }
 
     /// <summary>
